@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>선희쌤과 함께하는 윤리비티아이</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #e0e7ff;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --accent: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 540px;
+      background: var(--card-bg);
+      border-radius: 24px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+      padding: 32px 24px;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+      animation: fadeIn 0.3s ease-in-out forwards;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Start Screen */
+    .badge {
+      display: inline-block;
+      align-self: center;
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      margin-bottom: 16px;
+    }
+
+    h1.title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      text-align: center;
+      line-height: 1.35;
+      color: #0f172a;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .info-card {
+      background: #f1f5f9;
+      border-radius: 16px;
+      padding: 18px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .info-card ul {
+      padding-left: 20px;
+    }
+
+    .info-card li {
+      margin-bottom: 4px;
+    }
+
+    /* Quiz Screen */
+    .quiz-header {
+      margin-bottom: 24px;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: var(--border);
+      border-radius: 9999px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--primary);
+      transition: width 0.3s ease;
+      border-radius: 9999px;
+    }
+
+    .quiz-step {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .question-box {
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.5;
+      margin-bottom: 24px;
+      min-height: 56px;
+      color: #0f172a;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option-btn {
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 16px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.5;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      color: var(--text-main);
+    }
+
+    .option-btn:hover {
+      border-color: var(--primary);
+      background-color: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .option-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Result Screen */
+    .result-card {
+      text-align: center;
+      padding: 16px 0;
+    }
+
+    .result-mbti {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .result-name {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+
+    .result-tagline {
+      display: inline-block;
+      background: #fef3c7;
+      color: #b45309;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      margin-bottom: 24px;
+    }
+
+    .detail-box {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: left;
+      margin-bottom: 16px;
+    }
+
+    .detail-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .detail-desc {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: var(--text-main);
+      word-break: keep-all;
+    }
+
+    .quote-box {
+      background: #faf5ff;
+      border: 1px solid #e9d5ff;
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+      font-style: italic;
+      color: #6b21a8;
+      font-weight: 600;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    /* Primary Buttons */
+    .btn {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--primary-hover);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- START SCREEN -->
+    <div id="screen-start" class="screen active">
+      <span class="badge">사회과 부스 체험활동</span>
+      <h1 class="title">선희쌤과 함께하는<br>윤리비티아이</h1>
+      <p class="subtitle">나의 무의식적 일상 반응으로 알아보는<br>나를 쏙 빼닮은 통합사회 사상가는 누구일까?</p>
+      
+      <div class="info-card">
+        <ul>
+          <li>총 35문항으로 구성되어 있습니다.</li>
+          <li>정답이 없으니 너무 깊게 고민하지 마세요.</li>
+          <li>평소 본인의 자연스러운 반응을 골라주세요!</li>
+        </ul>
+      </div>
+
+      <button class="btn" onclick="startQuiz()">테스트 시작하기</button>
+    </div>
+
+    <!-- QUIZ SCREEN -->
+    <div id="screen-quiz" class="screen">
+      <div class="quiz-header">
+        <div class="progress-bar-bg">
+          <div id="progress-fill" class="progress-bar-fill"></div>
+        </div>
+        <div class="quiz-step">
+          <span id="part-name">Part 1</span>
+          <span id="question-number">1 / 35</span>
+        </div>
+      </div>
+
+      <div id="question-text" class="question-box">질문이 여기에 표시됩니다.</div>
+
+      <div class="options">
+        <button id="opt-a" class="option-btn" onclick="handleSelect('A')">선택지 A</button>
+        <button id="opt-b" class="option-btn" onclick="handleSelect('B')">선택지 B</button>
+      </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="screen-result" class="screen">
+      <div class="result-card">
+        <div id="res-mbti" class="result-mbti">ISTJ</div>
+        <div id="res-name" class="result-name">칸트</div>
+        <div id="res-tagline" class="result-tagline">"철벽의 원칙 설계자"</div>
+
+        <div class="quote-box" id="res-quote">
+          "너의 의지의 준칙이 언제나 보편적 입법의 원리가 되도록 행위하라."
+        </div>
+
+        <div class="detail-box">
+          <div class="detail-title">사상가 특징 & 키워드</div>
+          <div class="detail-desc" id="res-desc">
+            설명이 여기에 표시됩니다.
+          </div>
+        </div>
+
+        <div class="detail-box">
+          <div class="detail-title">통합사회 연계 단원</div>
+          <div class="detail-desc" id="res-unit">
+            단원 정보
+          </div>
+        </div>
+      </div>
+
+      <button class="btn" onclick="restartQuiz()">다시 테스트하기</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      // Part 1: E vs I (1~8)
+      { part: "Part 1. 생각과 자극을 다루는 방식", dim: "EI", q: "머릿속에 번뜩이는 좋은 아이디어가 떠올랐을 때 나는?", a: "입 밖으로 꺼내서 남에게 들려주어야 생각이 선명해진다.", b: "혼자 메모장에 적어보거나 속으로 충분히 다듬은 뒤에 꺼낸다." },
+      { part: "Part 1. 생각과 자극을 다루는 방식", dim: "EI", q: "혼자만의 자유 시간이 생겼을 때, 3~4시간이 흐른 뒤 내 마음은?", a: "슬슬 몸이 뻐근해져 바깥세상 소식을 찾거나 나갈 구실을 찾는다.", b: "시간 가는 줄 몰랐고, 방해받지 않는 이 상태가 계속되면 좋겠다." },
+      { part: "Part 1. 생각과 자극을 다루는 방식", dim: "EI", q: "수업 중 갑자기 의견을 질문받았을 때 나의 언어 습관은?", a: "\"제 생각은요...\" 하며 일단 말하면서 문장을 완성해 나간다.", b: "속으로 첫 문장과 요점을 1~2초라도 완벽히 정리한 뒤에 입을 연다." },
+      { part: "Part 1. 생각과 자극을 다루는 방식", dim: "EI", q: "주변 환경에 소음이 있거나 사람이 웅성거릴 때?", a: "백색소음처럼 느껴져서 오히려 집중이 잘 되거나 방해되지 않는다.", b: "사소한 말소리나 움직임 하나하나가 귀에 걸려 신경이 곤두선다." },
+      { part: "Part 1. 생각과 자극을 다루는 방식", dim: "EI", q: "일주일 동안 여러 사건을 겪고 난 뒤, '내 경험'으로 정리되는 순간은?", a: "누군가와 \"이번 주에 이런 일 있었잖아\" 하며 이야기를 나눌 때", b: "잠들기 전 누워서 혼자 하루하루를 조용히 되짚어볼 때" },
+      { part: "Part 1. 생각과 자극을 다루는 방식", dim: "EI", q: "친구들과 흥미롭게 대화를 나누는 도중, 나의 리듬은?", a: "상대방 말이 끝나기 무섭게 내 관련 경험이나 생각이 바로 튀어나온다.", b: "상대방 말을 끝까지 듣고, 속으로 한번 소화한 뒤 내 턴을 가진다." },
+      { part: "Part 1. 생각과 자극을 다루는 방식", dim: "EI", q: "새로운 공간이나 낯선 환경에 놓였을 때 나의 뇌가 먼저 하는 일은?", a: "주변 인테리어, 물건 위치, 사람들의 분위기 등 바깥 상황을 탐색한다.", b: "이 낯선 공간에서 내가 어떻게 행동해야 할지 내면의 긴장도를 점검한다." },
+      { part: "Part 1. 생각과 자극을 다루는 방식", dim: "EI", q: "어떤 분야에 관심이 생겼을 때 나의 행동 패턴은?", a: "관련 동아리를 찾거나, 잘 아는 사람에게 물어보며 배우려 한다.", b: "책, 영상, 검색 자료 등을 혼자 차분히 파고들며 먼저 이해하려 한다." },
+
+      // Part 2: S vs N (9~17)
+      { part: "Part 2. 정보를 받아들이는 방식", dim: "SN", q: "사과 한 알을 떠올릴 때 내 뇌리에 먼저 스치는 것은?", a: "빨간 껍질, 한 입 베어 물었을 때의 아삭한 식감과 달콤한 과즙", b: "뉴턴의 만유인력, 백설공주, 혹은 사과의 상징적 이미지" },
+      { part: "Part 2. 정보를 받아들이는 방식", dim: "SN", q: "길을 찾아갈 때 내가 더 편하게 의지하는 안내 방식은?", a: "\"편의점 끼고 우회전해서 100m 앞 빨간 벽돌집\" 같은 구체적 지형지물", b: "\"이쪽 방향으로 가다 보면 큰 사거리로 이어짐\" 같은 방위 감각" },
+      { part: "Part 2. 정보를 받아들이는 방식", dim: "SN", q: "영화나 웹툰을 볼 때 나를 더 몰입하게 만드는 요소는?", a: "인물들의 현실적인 대사, 생생한 배경 묘사와 연출 디테일", b: "작품 전체를 관통하는 숨겨진 복선, 세계관, 결말의 철학적 메시지" },
+      { part: "Part 2. 정보를 받아들이는 방식", dim: "SN", q: "새로운 도구나 앱을 처음 다루게 되었을 때?", a: "사용 설명서나 튜토리얼을 차근차근 확인하며 기본 기능부터 익힌다.", b: "설명서는 넘기고 이것저것 눌러보며 전체 작동 원리를 감으로 파악한다." },
+      { part: "Part 2. 정보를 받아들이는 방식", dim: "SN", q: "\"요즘 어때?\"라는 질문을 받았을 때 나의 대답 성향은?", a: "\"수행평가 기간이라 바빠\", \"어제 연습했어\"처럼 최근 일어난 사실 위주", b: "\"뭔가 공허해\", \"새로운 전환점이 필요한 느낌이야\"처럼 내면 흐름 위주" },
+      { part: "Part 2. 정보를 받아들이는 방식", dim: "SN", q: "누군가의 설명을 들을 때 더 답답하게 느껴지는 쪽은?", a: "실제 사례나 구체적 수치 없이 뜬구름 잡는 이야기만 늘어놓는 사람", b: "전체적인 맥락이나 핵심 메시지 없이 자잘한 디테일만 나열하는 사람" },
+      { part: "Part 2. 정보를 받아들이는 방식", dim: "SN", q: "버스를 타고 멍하니 창밖을 바라볼 때 내 머릿속은?", a: "지나가는 자동차 기종, 가게 간판, 사람들의 걸음걸이를 관찰한다.", b: "생각이 꼬리를 물고 이어져 현실과 무관한 엉뚱한 상상으로 흘러간다." },
+      { part: "Part 2. 정보를 받아들이는 방식", dim: "SN", q: "'나무'라는 단어를 들었을 때 내 마음에 더 와닿는 것은?", a: "푸른 잎과 단단한 기둥, 바람에 흔들리는 실물 나무의 생김새", b: "사계절의 순환, 아낌없이 주는 존재, 숲의 고요함 같은 은유적 이미지" },
+      { part: "Part 2. 정보를 받아들이는 방식", dim: "SN", q: "역사나 사회 과목을 공부할 때 더 자연스럽게 외워지는 것은?", a: "사건이 발생한 연도, 조약 명칭, 등장인물 이름 등 구체적 팩트", b: "그 사건이 터지게 된 사회적 분위기, 시대의 거대한 흐름과 배경" },
+
+      // Part 3: T vs F (18~26)
+      { part: "Part 3. 상황을 분석하고 납득하는 잣대", dim: "TF", q: "잘못된 결과가 나왔을 때, 내 뇌가 본능적으로 먼저 찾는 것은?", a: "어디서 오류가 났는지(시스템, 규칙, 절차상의 문제점)", b: "누가 어떤 부담 때문에 실수를 저질렀는지(당사자의 상황과 심리)" },
+      { part: "Part 3. 상황을 분석하고 납득하는 잣대", dim: "TF", q: "누군가의 주장을 들을 때 내가 '설득되었다'고 느끼는 순간은?", a: "전제와 결론 사이에 논리적 모순이 없고 인과관계가 확실할 때", b: "말하는 사람의 진정성이 느껴지고, 관련된 사람들의 입장을 배려했을 때" },
+      { part: "Part 3. 상황을 분석하고 납득하는 잣대", dim: "TF", q: "친구가 털어놓는 고민을 들을 때 내 머릿속에 먼저 떠오르는 생각은?", a: "\"이 문제를 해결하려면 일단 A부터 처리하고 B로 넘어가야겠네.\"", b: "\"저런 상황이었으면 혼자 얼마나 답답하고 막막했을까...\"" },
+      { part: "Part 3. 상황을 분석하고 납득하는 잣대", dim: "TF", q: "공동의 규칙을 적용해야 할 때, 나의 기준은?", a: "모두에게 동일한 기준을 예외 없이 적용해야 불공정이 생기지 않는다.", b: "처한 환경이 다를 텐데, 사정을 고려하지 않으면 억울한 사람이 생긴다." },
+      { part: "Part 3. 상황을 분석하고 납득하는 잣대", dim: "TF", q: "대화 중 누군가 나와 다른 의견을 팽팽하게 맞받아칠 때?", a: "'어떤 논거를 대서 이 논리적 빈틈을 짚어줄까?' 하는 생각이 든다.", b: "'저 사람 왜 이렇게 날이 서 있지? 기분이 상했나?' 하는 생각이 든다." },
+      { part: "Part 3. 상황을 분석하고 납득하는 잣대", dim: "TF", q: "영화나 드라마에서 비극적인 결말을 보았을 때 남는 생각은?", a: "\"인물들의 선택을 보면 필연적으로 저렇게 끝날 수밖에 없는 구조였네.\"", b: "\"그 상황에서 주인공 마음이 얼마나 찢어졌을까...\" 감정이 오래 맴돈다." },
+      { part: "Part 3. 상황을 분석하고 납득하는 잣대", dim: "TF", q: "내가 어떤 결정을 내리고 나서 후회하지 않는 쪽은?", a: "감정에 휩쓸리지 않고 객관적으로 가장 타당한 최선의 수를 골랐을 때", b: "내 선택으로 인해 소중한 사람의 마음에 상처를 주지 않았을 때" },
+      { part: "Part 3. 상황을 분석하고 납득하는 잣대", dim: "TF", q: "다른 사람에게 조언이나 평가를 건넬 때, 내 마음의 우선순위는?", a: "조금 따끔하더라도 상대방에게 실질적 도움이 되는 팩트를 알려주는 것", b: "내용도 중요하지만, 상대방의 자존감이 다치지 않게 둥글게 전하는 것" },
+      { part: "Part 3. 상황을 분석하고 납득하는 잣대", dim: "TF", q: "모둠 과제 결과물이 생각보다 잘 안 나왔을 때 드는 생각은?", a: "\"역할 분담과 마감 일정 관리가 비효율적이었어.\"", b: "\"서로 소통이 부족해서 팀원들끼리 마음이 안 맞았나 봐.\"" },
+
+      // Part 4: J vs P (27~35)
+      { part: "Part 4. 일상과 환경을 다루는 패턴", dim: "JP", q: "모바일 메신저의 읽지 않은 알림(빨간 숫자 1)을 볼 때의 심리는?", a: "빨간 숫자가 떠 있는 것 자체가 거슬려 일단 눌러서 없애야 편하다.", b: "숫자가 쌓여 있어도 별다른 거부감이 없고, 당장 지울 필요를 못 느낀다." },
+      { part: "Part 4. 일상과 환경을 다루는 패턴", dim: "JP", q: "길을 걷다가 예상치 못한 새로운 골목을 마주쳤을 때?", a: "원래 정해둔 경로에서 벗어나는 것이 신경 쓰여 알던 길로 발길을 돌린다.", b: "\"여기로 가면 어디로 통할까?\" 호기심에 불쑥 그 골목으로 가본다." },
+      { part: "Part 4. 일상과 환경을 다루는 패턴", dim: "JP", q: "컴퓨터 바탕화면이나 휴대폰 앱 정리 상태는?", a: "폴더별로 용도가 묶여 있거나 필요한 것만 정갈하게 정돈되어 있다.", b: "아이콘이 여기저기 흩어져 있지만, 내가 찾을 땐 감으로 척척 찾는다." },
+      { part: "Part 4. 일상과 환경을 다루는 패턴", dim: "JP", q: "주말에 해야 할 일이 2~3개 남아있을 때 나의 상태는?", a: "그걸 해치우기 전까지는 쉬어도 마음 한구석이 찝찝하고 무겁다.", b: "노는 시간과 일하는 시간은 별개라, 쉬는 동안엔 까맣게 잊고 온전히 쉰다." },
+      { part: "Part 4. 일상과 환경을 다루는 패턴", dim: "JP", q: "친구와의 약속 시간 30분 전, 나의 일반적인 상태는?", a: "이미 준비를 마치고 나가기 직전이거나, 약속 장소 근처에 미리 가 있다.", b: "이제 막 준비를 마무리 중이거나, 딱 이동 시간에 맞춰 집을 나선다." },
+      { part: "Part 4. 일상과 환경을 다루는 패턴", dim: "JP", q: "과제를 할 때 \"자유 주제로 마음껏 해봐\"라는 말을 들으면?", a: "명확한 기준이나 규정이 없어서 오히려 방향을 잡기 어렵고 막막하다.", b: "정해진 형식에 얽매이지 않고 해보고 싶은 아이디어를 펼칠 수 있어 신난다." },
+      { part: "Part 4. 일상과 환경을 다루는 패턴", dim: "JP", q: "식당이나 카페를 고를 때 나의 행동 패턴은?", a: "메뉴와 후기를 미리 검색해 보고 갈 곳을 1~2개로 좁혀둔 뒤 이동한다.", b: "일단 현장 근처에 가서 외관이나 간판 분위기를 보고 끌리는 곳으로 간다." },
+      { part: "Part 4. 일상과 환경을 다루는 패턴", dim: "JP", q: "책이나 잡지를 읽을 때 나의 습관은?", a: "차례(목차)대로 1페이지부터 차근차근 넘겨가야 제대로 읽는 느낌이다.", b: "목차를 대충 훑어보다가 눈길을 끄는 흥미로운 챕터부터 펼쳐본다." },
+      { part: "Part 4. 일상과 환경을 다루는 패턴", dim: "JP", q: "물건을 쓰고 난 직후 나의 손동작은?", a: "자연스럽게 원래 물건이 놓여 있던 자리에 도로 갖다 놓는다.", b: "일단 내 손이 닿기 편한 가까운 바닥이나 책상 위에 내려둔다." }
+    ];
+
+    const results = {
+      ISTJ: {
+        name: "칸트 (Immanuel Kant)",
+        tagline: "철벽의 원칙 설계자",
+        quote: "\"너의 의지의 준칙이 언제나 동시에 보편적 입법의 원리가 되도록 행위하라.\"",
+        desc: "감정이나 눈앞의 이익에 휘둘리지 않고, 스스로 정한 원칙과 도덕 법칙을 엄격하게 지키는 성향입니다. 약속과 책임을 무엇보다 소중히 여기며, 어떤 상황에서도 인간을 수단이 아닌 목적으로 대우해야 한다고 믿습니다.",
+        unit: "통합사회 1권: 행복의 의미와 도덕적 실천 / 인간 존엄성과 기본권"
+      },
+      ISFJ: {
+        name: "길리건 (Carol Gilligan)",
+        tagline: "마음을 보듬는 배려의 수호자",
+        quote: "\"진정한 도덕성은 추상적인 원칙이 아니라 구체적인 관계와 보살핌에서 나온다.\"",
+        desc: "주변 사람들의 상처와 감정에 깊이 공감하며 묵묵히 챙겨주는 따뜻한 조력자입니다. 차가운 법과 규칙보다 타인을 향한 책임감과 보살핌, 관계의 조화를 진정한 가치로 여깁니다.",
+        unit: "통합사회 1권: 인권 보장과 헌법 / 현대 사회의 배려 윤리"
+      },
+      ESTJ: {
+        name: "순자 (Xunzi)",
+        tagline: "엄격한 사회규범 설계자",
+        quote: "\"사람의 본성은 악하니, 배움과 예(禮)로써 끊임없이 갈고닦아야 한다.\"",
+        desc: "질서와 규율을 통해 혼란을 바로잡고 조직을 탄탄하게 이끄는 현실적 리더입니다. 인위적인 노력과 사회적 규범(예)을 통해 정의로운 사회를 만들 수 있다고 봅니다.",
+        unit: "통합사회 2권: 사회 정의와 불평등 / 사회 규범과 제도"
+      },
+      ESFJ: {
+        name: "공자 (Confucius)",
+        tagline: "따뜻한 공동체의 조화로운 리더",
+        quote: "\"자기가 서고자 하면 남을 먼저 세워주고, 자기가 이루고자 하면 남을 먼저 이루게 하라.\"",
+        desc: "모두가 서로를 존중하며 화목하게 어우러지는 공동체를 꿈꾸는 사람입니다. '인(仁)'의 따뜻한 사랑과 '예(禮)'의 올바른 예절을 실천하며 주변 사람들을 자연스럽게 감화시킵니다.",
+        unit: "통합사회 1권: 행복의 조건 / 도덕적 공동체와 대동 사회"
+      },
+      INTJ: {
+        name: "플라톤 (Plato)",
+        tagline: "이상 사회의 치밀한 건축가",
+        quote: "\"자신의 분수에 맞는 일을 묵묵히 수행하고 전체가 조화를 이룰 때 정의가 완성된다.\"",
+        desc: "눈앞의 현실보다 본질적인 이념과 완벽한 시스템을 통찰하는 전략가입니다. 지혜, 용기, 절제가 조화를 이루어 각자의 역할을 다하는 가장 정의롭고 이상적인 세상을 머릿속에 그립니다.",
+        unit: "통합사회 2권: 사회 정의와 기준 / 이상 사회관"
+      },
+      INFJ: {
+        name: "석가모니 (Buddha)",
+        tagline: "모든 생명을 품는 통찰가",
+        quote: "\"이것이 있으므로 저것이 있고, 이것이 생기므로 저것이 생긴다.\"",
+        desc: "세상의 모든 존재가 그물망처럼 연결되어 있음을 깊이 꿰뚫어 보는 현자입니다. 타인의 고통을 내 고통처럼 느끼며, 욕심과 집착을 내려놓고 자비와 평화를 전하고자 합니다.",
+        unit: "통합사회 1권: 행복과 내면적 성찰 / 환경 윤리와 생명 존중"
+      },
+      ENTJ: {
+        name: "홉스 (Thomas Hobbes)",
+        tagline: "강력한 질서의 수립자",
+        quote: "\"강력한 법과 계약이 없다면 삶은 고독하고, 비참하며, 짧을 뿐이다.\"",
+        desc: "혼란과 무질서를 단호하게 제압하고 명확한 통솔력으로 집단을 이끄는 지도자입니다. 합리적인 계약을 맺어 모두의 평화와 안전을 확실하게 보장하는 강한 질서를 추구합니다.",
+        unit: "통합사회 1권: 인권의 역사와 사회계약설"
+      },
+      ENFJ: {
+        name: "맹자 (Mencius)",
+        tagline: "사람의 선함을 믿는 감화형 리더",
+        quote: "\"사람의 마음에 차마 남의 고통을 외면하지 못하는 착한 본성이 있다.\"",
+        desc: "인간에 대한 무한한 신뢰와 애정을 바탕으로 사람들을 이끄는 열정적인 멘토입니다. 힘으로 억누르기보다 덕과 사랑으로 감동을 주는 '왕도정치'의 세상을 꿈꿉니다.",
+        unit: "통합사회 2권: 사회 정의와 복지 / 통치자의 도덕적 자질"
+      },
+      INTP: {
+        name: "롤스 (John Rawls)",
+        tagline: "공정한 시스템 분석가",
+        quote: "\"정의는 사회 제도의 제1덕목이며, 가장 취약한 사람을 배려할 때 완성된다.\"",
+        desc: "편견과 사리사욕을 배제한 완벽하게 공정한 룰을 치밀하게 고안하는 지성인입니다. '무지의 베일' 뒤에서 가장 어려운 이웃(최소 수혜자)까지 함께 살아갈 수 있는 합리적 시스템을 설계합니다.",
+        unit: "통합사회 2권: 사회 정의와 불평등 문제 / 정의의 기본 원칙"
+      },
+      INFP: {
+        name: "갈퉁 (Johan Galtung)",
+        tagline: "구조적 평화를 꿈꾸는 이상가",
+        quote: "\"전쟁이 없는 것만으로는 부족하다. 보이지 않는 차별과 빈곤까지 사라져야 진짜 평화다.\"",
+        desc: "눈앞의 갈등 해결을 넘어, 사람의 마음을 멍들게 하는 보이지 않는 사회 구조적 폭력까지 없애고자 하는 이상주의자입니다. 모두가 온전한 존엄성을 누리는 '적극적 평화'를 지향합니다.",
+        unit: "통합사회 2권: 평화와 세계화 / 소극적 평화와 적극적 평화"
+      },
+      ENTP: {
+        name: "마르크스 (Karl Marx)",
+        tagline: "모순을 뒤엎는 비판적 혁명가",
+        quote: "\"철학자들은 세계를 다양하게 해석하기만 했다. 중요한 것은 세계를 변화시키는 것이다.\"",
+        desc: "기존의 상식이나 불합리한 사회 구조에 날카로운 의문을 던지는 도전자입니다. 인간이 소외되지 않고 자신의 가능성을 마음껏 꽃피울 수 있는 평등한 세상을 향해 거침없이 질문합니다.",
+        unit: "통합사회 2권: 자본주의의 발전과 불평등 / 노동 인권"
+      },
+      ENFP: {
+        name: "루소 (Jean-Jacques Rousseau)",
+        tagline: "자유를 노래하는 열정가",
+        quote: "\"인간은 자유롭게 태어났으나 도처에서 사슬에 묶여 있다. 자연으로 돌아가라!\"",
+        desc: "틀에 박힌 관습에서 벗어나 순수한 본성과 자유를 갈망하는 예술가적 영혼입니다. 공동체 구성원 모두의 진정한 뜻(일반의지)이 살아 숨 쉬는 자유롭고 평등한 민주사회를 지향합니다.",
+        unit: "통합사회 1권: 사회계약론 / 시민의 정치 참여"
+      },
+      ISTP: {
+        name: "로크 (John Locke)",
+        tagline: "합리적인 권리 수호자",
+        quote: "\"어느 누구도 타인의 생명, 건강, 자유, 또는 소유물을 침해해서는 안 된다.\"",
+        desc: "군더더기 없는 명확한 사실과 현실적 권리를 중요시하는 실용주의자입니다. 개인의 생명과 자유, 정당한 재산권을 굳건히 지키며, 약속을 어긴 권력에는 당당히 맞서는 합리적 태도를 지닙니다.",
+        unit: "통합사회 1권: 자연권 사상과 권력 분립 / 헌법과 기본권"
+      },
+      ISFP: {
+        name: "노자 (Laozi)",
+        tagline: "물처럼 흘러가는 유유자적러",
+        quote: "\"가장 좋은 것은 물과 같다(상선약수). 만물을 이롭게 하면서도 다투지 않는다.\"",
+        desc: "인위적으로 억지 부리지 않고 자연스러운 흐름에 몸을 맡기는 자유로운 영혼입니다. 남과 경쟁하며 자신을 옥죄기보다, 소박하고 평화롭게 본연의 모습을 지켜나가는 삶을 사랑합니다.",
+        unit: "통합사회 1권: 행복의 관점 / 인간과 자연의 바람직한 관계"
+      },
+      ESTP: {
+        name: "벤담 (Jeremy Bentham)",
+        tagline: "가성비 쾌락 계산기",
+        quote: "\"최대 다수의 최대 행복이야말로 옳고 그름을 판단하는 척도이다.\"",
+        desc: "말만 번지르르한 이론보다 눈에 보이는 실질적 결과와 효용을 중시하는 실천가입니다. 모든 사람의 고통을 줄이고 기쁨을 극대화할 수 있는 가장 확실하고 가성비 높은 해법을 찾아냅니다.",
+        unit: "통합사회 1권: 행복과 공리주의 / 사회 정의의 기준"
+      },
+      ESFP: {
+        name: "밀 (John Stuart Mill)",
+        tagline: "품격 있는 즐거움을 아는 미식가",
+        quote: "\"배부른 돼지가 되기보다는 차라리 배고픈 소크라테스가 되는 편이 낫다.\"",
+        desc: "단순한 자극을 넘어 삶의 질과 정신적인 성숙을 즐길 줄 아는 감각적인 사람입니다. 다른 사람에게 피해를 주지 않는 한 각자의 개성과 자유를 마음껏 꽃피우는 다채로운 세상을 지지합니다.",
+        unit: "통합사회 1권: 질적 공리주의 / 자유와 개별성의 가치"
+      }
+    };
+
+    let currentIndex = 0;
+    let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+    let firstChoice = "E"; // 1번 문항 동률 판정용
+
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+    }
+
+    function startQuiz() {
+      currentIndex = 0;
+      scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+      showScreen('screen-quiz');
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = questions[currentIndex];
+      document.getElementById('part-name').innerText = q.part;
+      document.getElementById('question-number').innerText = `${currentIndex + 1} / ${questions.length}`;
+      
+      const progressPercent = ((currentIndex) / questions.length) * 100;
+      document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+
+      document.getElementById('question-text').innerText = q.q;
+      document.getElementById('opt-a').innerText = q.a;
+      document.getElementById('opt-b').innerText = q.b;
+    }
+
+    function handleSelect(choice) {
+      const q = questions[currentIndex];
+      const traitA = q.dim[0];
+      const traitB = q.dim[1];
+
+      if (currentIndex === 0) {
+        firstChoice = (choice === 'A') ? 'E' : 'I';
+      }
+
+      if (choice === 'A') {
+        scores[traitA]++;
+      } else {
+        scores[traitB]++;
+      }
+
+      currentIndex++;
+      if (currentIndex < questions.length) {
+        renderQuestion();
+      } else {
+        calculateResult();
+      }
+    }
+
+    function calculateResult() {
+      let mbti = "";
+
+      // EI
+      if (scores.E > scores.I) mbti += "E";
+      else if (scores.I > scores.E) mbti += "I";
+      else mbti += firstChoice;
+
+      // SN
+      mbti += (scores.S >= scores.N) ? "S" : "N";
+
+      // TF
+      mbti += (scores.T >= scores.F) ? "T" : "F";
+
+      // JP
+      mbti += (scores.J >= scores.P) ? "J" : "P";
+
+      displayResult(mbti);
+    }
+
+    function displayResult(mbti) {
+      const data = results[mbti];
+      document.getElementById('res-mbti').innerText = mbti;
+      document.getElementById('res-name').innerText = data.name;
+      document.getElementById('res-tagline').innerText = data.tagline;
+      document.getElementById('res-quote').innerText = data.quote;
+      document.getElementById('res-desc').innerText = data.desc;
+      document.getElementById('res-unit').innerText = data.unit;
+
+      showScreen('screen-result');
+    }
+
+    function restartQuiz() {
+      showScreen('screen-start');
+    }
+  </script>
+</body>
+</html>
